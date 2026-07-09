@@ -54,6 +54,20 @@ let quizScore = 0;
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
     updateSlideDisplay();
+    
+    // Add slide footers dynamically for Slide 2 to 12
+    document.querySelectorAll('.slide').forEach((slide, index) => {
+        const slideNum = index + 1;
+        if (slideNum > 1 && slideNum < 13) {
+            const footer = document.createElement('div');
+            footer.className = 'slide-footer';
+            footer.innerHTML = `
+                <span>🛡️ CONTROLE DE QUALIDADE</span>
+                <span>Slide ${slideNum} de 13</span>
+            `;
+            slide.appendChild(footer);
+        }
+    });
 });
 
 // Slide Navigation
