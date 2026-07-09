@@ -1,1309 +1,539 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Treinamento do Sistema de Produção - INDÚSTRIA DE MASSAS CONGELADAS</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Phosphor Icons -->
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <style>
-    :root {
-      --amarelo: #f5b915;
-      --amarelo-claro: #fff3d6;
-      --marrom: #6b4423;
-      --marrom-claro: #a78355;
-    }
-    
-    @media print {
-      body {
-        background: white !important;
-        color: black !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-      .slide-page {
-        page-break-after: always;
-        height: 100vh !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-        padding: 1.5rem !important;
-        display: flex !important;
-      }
-    }
-
-    /* Presentation container and slide layout */
-    .presentation-container {
-      width: 100%;
-      max-width: 1100px;
-      margin: 0 auto;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .slide-page {
-      width: 100%;
-      max-width: 1100px;
-      aspect-ratio: 16/9;
-      background: white;
-      border: 2px solid #e8c667;
-      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.15), 0 10px 15px -6px rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.2s ease;
-    }
-
-    /* Hidden by default in slide mode */
-    .slide-mode .slide-page {
-      display: none;
-    }
-    .slide-mode .slide-page.active-slide {
-      display: flex;
-    }
-
-    /* Fullscreen specifications to fill the entire viewport */
-    .presentation-container:fullscreen {
-      max-width: 100vw !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background-color: #111 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-
-    .presentation-container:fullscreen .slide-page {
-      max-width: 100vw !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      aspect-ratio: auto !important;
-      border: none !important;
-      box-shadow: none !important;
-      margin: 0 !important;
-      padding: 2.5rem !important;
-    }
-
-    /* Webkit vendor support for Safari/Chrome */
-    .presentation-container:-webkit-full-screen {
-      max-width: 100vw !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background-color: #111 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-
-    .presentation-container:-webkit-full-screen .slide-page {
-      max-width: 100vw !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      aspect-ratio: auto !important;
-      border: none !important;
-      box-shadow: none !important;
-      margin: 0 !important;
-      padding: 2.5rem !important;
-    }
-
-    .legend-indicator {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      background-color: #dc2626;
-      color: white;
-      font-weight: 950;
-      border-radius: 9999px;
-      font-size: 11px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-      border: 1px solid white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boas Práticas de Fabricação (BPF) - IMAC</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 pb-24 slide-mode">
-
-  <!-- Print & Presenter Bar (no-print) -->
-  <div class="no-print bg-white shadow-md p-4 sticky top-0 z-50 flex justify-between items-center max-w-5xl mx-auto rounded-b-xl mb-6">
-    <div class="flex items-center gap-3">
-      <img src="logo.png" alt="IMAC Logo" class="h-10">
-      <div>
-        <h1 class="font-bold text-gray-800">Indústria de Massas Congeladas - IMAC</h1>
-        <p class="text-xs text-gray-500">Manual de Treinamento e Teste Prático</p>
-      </div>
-    </div>
-    <div class="flex gap-2">
-      <button onclick="toggleModoApresentacao()" id="btn-modo" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg shadow text-xs flex items-center gap-1.5 transition">
-        <i class="ph ph-projector-screen text-lg"></i>
-        <span>Modo Rolagem</span>
-      </button>
-      <button onclick="entrarTelaCheia()" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-4 rounded-lg shadow text-xs flex items-center gap-1.5 transition border border-stone-700">
-        <i class="ph ph-arrows-out text-lg"></i>
-        Tela Cheia
-      </button>
-      <button onclick="window.print()" class="bg-gray-100 hover:bg-gray-200 text-stone-800 font-bold py-2 px-4 rounded-lg shadow text-xs flex items-center gap-1.5 transition border border-gray-300">
-        <i class="ph ph-printer text-lg"></i>
-        Imprimir
-      </button>
-    </div>
-  </div>
-
-  <!-- Slides Container -->
-  <div class="presentation-container" id="presentation-area">
-
-    <!-- SLIDE 1: CAPA -->
-    <div id="slide-1" class="slide-page p-10 bg-stone-900 border-none relative flex flex-col justify-between active-slide" style="background: linear-gradient(135deg, #3d2512 0%, #1e1208 100%);">
-      <div class="flex justify-between items-start">
-        <img src="logo.png" alt="IMAC Logo" class="h-20 bg-white p-2 rounded-xl">
-        <div class="text-right text-amber-500 font-mono text-sm">Treinamento Interativo de Operação</div>
-      </div>
-      
-      <div class="my-auto">
-        <div class="h-2 w-24 bg-amber-500 mb-6"></div>
-        <h1 class="text-5xl font-black text-white leading-tight">
-          Treinamento Prático Completo:<br>
-          <span class="text-amber-400">Fluxo Operacional de Produção</span>
-        </h1>
-        <p class="text-lg text-gray-300 mt-4 max-w-2xl font-light">
-          Treinamento operacional com simulação prática de apontamentos, controle de túnel de congelamento helicoidal, fechamento de produção com perdas e pé de massa, acompanhamento de timeline da embaladora e conferência de desvio de rendimento de pesagem nas câmaras frias.
-        </p>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-stone-800 pt-6">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-3 py-1 rounded text-xs">SLIDE 1</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 2: TELA DE LOGIN & PERFIS -->
-    <div id="slide-2" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-shield-check text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Acesso ao Sistema e Perfis Específicos</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <!-- Simulated Login Screen -->
-        <div class="col-span-3 bg-gray-50 p-6 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-md max-w-sm mx-auto space-y-4">
-            <div class="text-center border-b pb-2">
-              <i class="ph ph-user-circle text-5xl text-amber-600 mb-1"></i>
-              <h4 class="font-bold text-stone-800">Acesso ao Sistema IMAC</h4>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="IMAC Logo" class="logo-img">
+                <span class="company-title">Controle de Qualidade</span>
             </div>
-            
-            <div class="grid grid-cols-2 gap-2 text-[11px]">
-              <button onclick="selecionarPerfil('Líder', 'Acesso completo de programação, perdas, sobras, pé de massa e observações.')" class="p-2 border rounded hover:border-amber-500 font-bold text-left bg-gray-50">Líder (PCP)</button>
-              <button onclick="selecionarPerfil('Produção', 'Masseiros apontam batidas e início/término do túnel helicoidal.')" class="p-2 border rounded hover:border-amber-500 font-bold text-left bg-gray-50">Produção (Masseira)</button>
-              <button onclick="selecionarPerfil('Embaladora', 'Acompanha a timeline do túnel helicoidal e identifica lotes das caixas.')" class="p-2 border rounded hover:border-amber-500 font-bold text-left bg-gray-50">Embaladora</button>
-              <button onclick="selecionarPerfil('Expedição', 'Registra pesagens individuais de patinhas e valida com PCP.')" class="p-2 border rounded hover:border-amber-500 font-bold text-left bg-gray-50">Expedição</button>
-            </div>
-            
-            <div class="text-xs bg-amber-50 p-3 rounded-lg border border-amber-200">
-              <div class="font-bold text-amber-900">Perfil Ativo: <span id="login-perfil-nome">Líder</span></div>
-              <div class="text-amber-800 mt-1" id="login-perfil-desc">Acesso completo de programação, perdas, sobras, pé de massa e observações.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-span-2 space-y-4 font-sans">
-          <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-            <h4 class="font-bold text-amber-900 text-sm">Controle de Segurança</h4>
-            <p class="text-xs text-amber-800 mt-1 leading-relaxed">
-              Cada colaborador acessa a sua função correspondente. Lembre-se: o número da OP gerado pelo PCP segue com a produção até a consolidação de estoque.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-3 py-1 rounded text-xs">SLIDE 2</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 3: FLUXOGRAMA DE ETAPAS -->
-    <div id="slide-3" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-git-fork text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Fluxograma de Informações e Etapas de Produção</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-      
-      <div class="grid grid-cols-6 gap-2 my-auto text-center items-stretch font-sans">
-        <!-- PCP -->
-        <div class="bg-gray-50 border border-gray-300 rounded-xl p-2 flex flex-col justify-between shadow-sm">
-          <div>
-            <div class="text-[9px] font-black text-gray-500 uppercase mb-1">PCP</div>
-            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mx-auto text-gray-700 text-lg mb-1">
-              <i class="ph ph-desktop"></i>
-            </div>
-            <div class="font-bold text-xs text-stone-800">1. Criar OPs</div>
-          </div>
-          <p class="text-[10px] text-stone-500 mt-1 leading-tight">O PCP cria as ordens de produção no Winthor.</p>
-        </div>
-
-        <!-- Líder Programação -->
-        <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 flex flex-col justify-between shadow-sm">
-          <div>
-            <div class="text-[9px] font-black text-amber-800 uppercase mb-1">Líder</div>
-            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 text-lg mb-1">
-              <i class="ph ph-notebook"></i>
-            </div>
-            <div class="font-bold text-xs text-stone-800">2. Programar</div>
-          </div>
-          <p class="text-[10px] text-stone-600 mt-1 leading-tight">Importa as OPs no tablet e confirma a programação.</p>
-        </div>
-
-        <!-- Masseiros -->
-        <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 flex flex-col justify-between shadow-sm">
-          <div>
-            <div class="text-[9px] font-black text-amber-800 uppercase mb-1">Masseiro</div>
-            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 text-lg mb-1">
-              <i class="ph ph-users-three"></i>
-            </div>
-            <div class="font-bold text-xs text-stone-800">3. Masseira / Túnel</div>
-          </div>
-          <p class="text-[10px] text-stone-600 mt-1 leading-tight">Lança batidas. Registra entrada/término no túnel de congelamento helicoidal.</p>
-        </div>
-
-        <!-- Parada de Emergência & Fechamento Líder -->
-        <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 flex flex-col justify-between shadow-sm">
-          <div>
-            <div class="text-[9px] font-black text-amber-800 uppercase mb-1">Líder</div>
-            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 text-lg mb-1">
-              <i class="ph ph-check-square"></i>
-            </div>
-            <div class="font-bold text-xs text-stone-800">4. Fechamento</div>
-          </div>
-          <p class="text-[10px] text-stone-600 mt-1 leading-tight">Registra perdas de produção, sobras, pé de massa e observações.</p>
-        </div>
-
-        <!-- Embaladora -->
-        <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 flex flex-col justify-between shadow-sm">
-          <div>
-            <div class="text-[9px] font-black text-amber-800 uppercase mb-1">Embaladora</div>
-            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 text-lg mb-1">
-              <i class="ph ph-package"></i>
-            </div>
-            <div class="font-bold text-xs text-stone-800">5. Embalar</div>
-          </div>
-          <p class="text-[10px] text-stone-600 mt-1 leading-tight">Acompanha queda na timeline e empacota caixas em patinhas.</p>
-        </div>
-
-        <!-- Expedição -->
-        <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 flex flex-col justify-between shadow-sm">
-          <div>
-            <div class="text-[9px] font-black text-amber-800 uppercase mb-1">Expedição</div>
-            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-700 text-lg mb-1">
-              <i class="ph ph-scales"></i>
-            </div>
-            <div class="font-bold text-xs text-stone-800">6. Pesagem</div>
-          </div>
-          <p class="text-[10px] text-stone-600 mt-1 leading-tight">Registra a lista de pesagens, confere divergência e envia ao estoque.</p>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 3</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 4: MASSEIRO - APONTAMENTO -->
-    <div id="slide-4" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-users-three text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Masseiro - Apontamento de Batidas</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-6 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <div class="flex justify-between items-center">
-              <div>
-                <span class="font-black text-2xl text-stone-800 font-sans" id="s4-prod-nome">PAO FRANCES</span>
-                <div class="text-xs text-gray-400 mt-1">OP: <span id="s4-op-num">63121</span></div>
-              </div>
-              <span class="bg-amber-50 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Masseira 1</span>
-            </div>
-            
-            <div class="flex items-center justify-between gap-4">
-              <div class="flex-1">
-                <div class="font-black text-stone-800 text-3xl">
-                  <span id="s4-feitos">3</span> <span class="text-gray-400 text-lg">/ 10 receitas</span>
+            <div class="progress-bar-container">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressBar"></div>
                 </div>
-                <div class="w-full bg-gray-200 h-4 rounded-full mt-2 overflow-hidden">
-                  <div id="s4-progresso" class="bg-amber-500 h-full transition-all duration-300" style="width: 30%;"></div>
-                </div>
-              </div>
-              
-              <div class="flex gap-2">
-                <button onclick="ajustarBatida(-1)" class="w-14 h-14 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-black rounded-xl text-xl flex items-center justify-center relative">
-                  −1 <span class="absolute -top-3 -right-3 legend-indicator">②</span>
-                </button>
-                <button onclick="ajustarBatida(1)" class="w-14 h-14 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-xl text-xl flex items-center justify-center relative">
-                  +1 <span class="absolute -top-3 -right-3 legend-indicator">①</span>
-                </button>
-              </div>
+                <span class="progress-text" id="progressText">Slide 1 de 8</span>
             </div>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-list-numbers text-amber-500"></i> Apontamento de Masseira
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Lançar Batida (+1):</b> Registra uma receita de pão batida no freezer. Isso atualiza a velocidade média na TV do monitoramento.</div>
-            </div>
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">②</span>
-              <div><b>Desfazer (-1):</b> Use para deduzir uma batida em caso de clique errado.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 4</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 5: MASSEIRO - TÚNEL INÍCIO -->
-    <div id="slide-5" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-wind text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Masseiro - Registrar Entrada no túnel de congelamento helicoidal</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-6 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-              <span class="font-black text-stone-900 text-lg">PAO FRANCES</span>
-              <span class="bg-blue-100 text-blue-800 text-[10px] px-2.5 py-1 rounded font-black tracking-wider uppercase">PRODUÇÃO INICIADA</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <label class="block text-gray-500 font-bold mb-1">Horário de Entrada <span class="legend-indicator">①</span></label>
-                <input type="time" id="s5-hora-entrada" onchange="atualizarHoraEntrada(this.value)" class="w-full p-2 border border-amber-400 bg-amber-50 rounded font-bold text-stone-800" value="18:30">
-              </div>
-              <div>
-                <label class="block text-gray-500 font-bold mb-1">Horário de Término</label>
-                <input type="text" class="w-full p-2 border rounded bg-gray-100 text-gray-400 font-medium italic" value="Aguardando..." readonly>
-              </div>
-            </div>
-
-            <button onclick="mostrarNotificacao('Início no túnel registrado!')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-sm transition-colors shadow">
-              Registrar Início no Túnel
-            </button>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-wind text-amber-500"></i> Entrada no Túnel
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Horário de Entrada:</b> O masseiro preenche e lança assim que o pão entra no túnel de congelamento helicoidal. Término fica pendente.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 5</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 6: MASSEIRO - TÚNEL TÉRMINO -->
-    <div id="slide-6" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-wind text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Masseiro - Registrar Término no túnel de congelamento helicoidal</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-6 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-              <span class="font-black text-stone-900 text-lg">PAO FRANCES</span>
-              <span class="bg-green-100 text-green-800 text-[10px] px-2.5 py-1 rounded font-black tracking-wider uppercase">PRODUÇÃO CONCLUÍDA</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-sm">
-              <div class="opacity-60">
-                <label class="block text-gray-500 font-bold mb-1">Horário de Entrada</label>
-                <input type="time" id="s6-hora-entrada" class="w-full p-2 border rounded bg-gray-100" value="18:30" readonly>
-              </div>
-              <div>
-                <label class="block text-gray-500 font-bold mb-1">Horário de Término <span class="legend-indicator">①</span></label>
-                <input type="time" id="s6-hora-termino" onchange="atualizarHoraTermino(this.value)" class="w-full p-2 border border-amber-400 bg-amber-50 rounded font-bold text-stone-800" value="19:05">
-              </div>
-            </div>
-
-            <button onclick="mostrarNotificacao('Carga finalizada no túnel!')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg text-sm transition-colors shadow">
-              Confirmar Término no Túnel
-            </button>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-wind text-amber-500"></i> Término de Carga
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Horário de Término:</b> O masseiro acessa e registra o término de entrada assim que o último pão daquele lote entra no túnel de congelamento helicoidal.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 6</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 7: PARADA DE EMERGÊNCIA -->
-    <div id="slide-7" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-warning-circle text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Controle de Parada de Emergência da Fábrica</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-6 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <button id="s12-btn-parada" onclick="alternarParadaSlide12()" class="w-full bg-red-100 hover:bg-red-200 text-red-800 border-2 border-red-500 font-black py-4 rounded-xl text-lg flex items-center justify-center gap-2 transition-colors relative">
-              🚨 ACIONAR PARADA DE EMERGÊNCIA <span class="absolute -top-3 -right-3 legend-indicator">①</span>
-            </button>
-            <div class="text-xs p-3 rounded-lg border bg-gray-50 text-gray-600" id="s12-status-parada">
-              <b>Status da Linha:</b> Produzindo normalmente.
-            </div>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-warning text-amber-500"></i> Parada de Emergência
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Apenas pausa o tempo:</b> O acionamento da parada de emergência serve apenas para congelar e pausar o cronômetro do tempo ativo de produção daquele lote no banco de dados.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 7</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 8: LÍDER - FECHAMENTO DE TURNO -->
-    <div id="slide-8" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-check-square-offset text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Fechamento do Líder - Perdas, Pé de Massa e Observações</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-4 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-3 text-xs">
-            <div class="flex justify-between items-center border-b pb-2">
-              <span class="font-black text-stone-800">1. PAO FRANCES</span>
-              <span class="text-stone-500 font-bold">Meta: 10 · Feitos: <span id="s8-feitos-val">3</span></span>
-            </div>
-            
-            <div class="space-y-2">
-              <div class="flex justify-between items-center bg-gray-50 p-2 rounded border">
-                <span>Massa perdida (produção)</span>
-                <input type="number" id="s7-perda-prod" onchange="atualizarPerdaProd(this.value)" class="w-20 p-1 border rounded text-right font-black" value="1.50">
-              </div>
-              
-              <div class="flex justify-between items-center bg-gray-50 p-2 rounded border">
-                <span>Pé de massa utilizado</span>
-                <input type="number" id="s7-pe-massa" onchange="atualizarPeMassa(this.value)" class="w-20 p-1 border rounded text-right font-black" value="5.00">
-              </div>
-
-              <!-- Observações Mockup -->
-              <div>
-                <label class="block text-gray-500 font-bold mb-1">Observações do Turno <span class="legend-indicator">①</span></label>
-                <textarea id="s7-obs" onchange="atualizarObs(this.value)" class="w-full p-2 border border-amber-400 bg-amber-50 rounded text-stone-800 font-medium" rows="2" placeholder="Observações de desvio, sobras de massa..."></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-check-square text-amber-500"></i> Consolidação de Turno
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Observações:</b> Campo de texto livre para o líder apontar eventos anormais ou justificativas sobre desvios de rendimento. A perda da embalagem foi removida pois o fechamento ocorre antes da queda na esteira.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 8</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 9: TELA DA EMBALADORA -->
-    <div id="slide-9" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-package text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Painel Real da Embaladora (Timeline e Quedas)</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-[#151A22] rounded-3xl p-6 shadow-2xl relative max-h-[360px] overflow-y-auto">
-          <h3 class="text-[#F6BE00] font-black text-lg mb-1 flex items-center gap-2 uppercase tracking-wide">
-             <i class="ph ph-monitor-play text-xl"></i> Painel do Túnel Helicoidal
-          </h3>
-          <p class="text-gray-400 text-xs mb-6">Sequência preditiva do que está vindo da masseira e passando pelo túnel.</p>
-          
-          <div class="relative pl-6 space-y-6">
-            <div class="absolute left-0 top-3 bottom-3 w-[2px] bg-gray-700"></div>
-            
-            <div class="relative">
-              <div class="absolute -left-[30px] top-6 w-3 h-3 rounded-full bg-[#F6BE00] shadow-[0_0_10px_#F6BE00]"></div>
-              <div class="bg-[#1D2530] rounded-xl p-4 border border-[#F6BE00]">
-                 <div class="inline-block px-2.5 py-0.5 rounded font-black text-[9px] mb-2 uppercase bg-[#F6BE00] text-[#151A22]">EMBALANDO AGORA</div>
-                 <div class="flex items-center gap-3">
-                   <h4 class="text-lg font-black text-white">PAO FRANCES</h4>
-                   <div class="bg-black text-[#F6BE00] px-2 py-0.5 rounded font-bold text-xs border border-gray-700">Lote <span id="s9-lote">L-0807</span></div>
-                 </div>
-                 <div class="flex flex-col gap-1.5 mt-3 text-xs">
-                   <div class="inline-flex items-center gap-2 bg-[#151A22] border border-gray-700 rounded-lg px-3 py-1.5 w-max">
-                     <i class="ph ph-clock text-[#F6BE00]"></i>
-                     <span class="text-gray-300 font-mono">Início: <span id="s9-entrada">18:30</span> — Fim: <span id="s9-termino">19:05</span></span>
-                   </div>
-                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-span-2 space-y-4 text-xs text-stone-700">
-          <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-            <h4 class="font-bold text-amber-900 text-sm">Visualização da Embaladora</h4>
-            <p class="text-xs text-amber-800 mt-1 leading-relaxed">
-              Painel idêntico ao carregado no terminal da Embalagem.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 9</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 10: EXPEDIÇÃO - FORMULÁRIO DE PESAGEM -->
-    <div id="slide-10" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-scales text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Expedição - Pesagem das Patinhas</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-4 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-3 text-xs">
             <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1">Responsável pela Pesagem <span class="legend-indicator">①</span></label>
-              <input id="s9-nome-op" class="w-full p-2.5 border border-gray-300 rounded-lg" value="João" placeholder="Digite seu nome (Ex: João)">
-            </div>
-
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1">Produto Programado (Hoje)</label>
-              <select class="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 font-bold text-stone-800">
-                <option value="0">PAO FRANCES (OP 63121)</option>
-              </select>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">Lote Físico</label>
-                <input id="s9-lote-op" class="w-full p-2.5 border border-gray-300 rounded-lg" value="L-0807">
-              </div>
-              <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">Validade</label>
-                <input type="date" id="s9-val-op" class="w-full p-2.5 border border-gray-300 rounded-lg" value="2026-09-08">
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-3 gap-2 items-center">
-              <div class="col-span-2">
-                <label class="block text-sm font-bold text-amber-600 mb-1">Peso da Patinha <span class="legend-indicator">②</span></label>
-                <button onclick="digitarPesoInterativoS9()" class="w-full p-3 border border-amber-300 bg-amber-50 rounded-lg font-black text-amber-800 text-center text-lg">
-                  <span id="s9-peso-op">130.50</span> kg
+                <button class="btn btn-secondary" onclick="toggleFullscreen()" style="padding: 0.5rem 1.2rem; font-size: 1.15rem; border-radius: var(--border-radius-sm);">
+                    📺 Tela Cheia (Slides)
                 </button>
-              </div>
-              <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">Unidade</label>
-                <select class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 font-bold text-stone-800">
-                  <option value="kg">kg</option>
-                </select>
-              </div>
             </div>
+        </header>
+
+        <!-- Main Slide Area -->
+        <main class="presentation-container" id="presentationContainer">
             
-            <button onclick="adicionarPatinhaInterativa()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg shadow-sm transition">
-              Adicionar à Conferência
-            </button>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-note text-amber-500"></i> Lançamento de Peso
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Nome do Operador:</b> Responsável pela pesagem do dia.</div>
-            </div>
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">②</span>
-              <div><b>Digitar Peso:</b> Clique no peso para simular digitar o peso da patinha.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-xs">Módulo: Expedição (Pesagem)</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 10</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 11: EXPEDIÇÃO - CONFERÊNCIA E RENDIMENTO -->
-    <div id="slide-11" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-scales text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Conferência & Divergência de Rendimento</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <div class="col-span-3 bg-gray-50 p-4 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-3 text-xs">
-            <!-- Comparative yield box -->
-            <div class="bg-amber-50 p-3 rounded-lg border border-amber-300 grid grid-cols-3 text-center">
-              <div>
-                <div class="text-[9px] text-amber-800">Teórico Esperado</div>
-                <div class="font-black text-stone-900">260.00 kg</div>
-              </div>
-              <div>
-                <div class="text-[9px] text-amber-800">Real na Câmara</div>
-                <div class="font-black text-stone-900"><span id="s10-real-camara">258.70</span> kg</div>
-              </div>
-              <div>
-                <div class="text-[9px] text-amber-800">Divergência (Desvio)</div>
-                <div class="font-black text-red-600" id="s10-divergencia">-0.50%</div>
-              </div>
-            </div>
-
-            <!-- List of weighed patinhas -->
-            <div class="border rounded-lg max-h-24 overflow-y-auto divide-y" id="s10-lista-patinhas">
-              <!-- Rendered via JS -->
-            </div>
-
-            <button onclick="confirmarEntradaEstoque()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg text-xs transition-colors shadow">
-              Confirmar Entrada na Câmara <span class="legend-indicator">①</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
-          <h4 class="font-black text-sm text-stone-800 uppercase tracking-wide border-b pb-1.5 flex items-center gap-1.5">
-            <i class="ph ph-presentation text-amber-500"></i> Desvio de Rendimento
-          </h4>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2 items-start">
-              <span class="legend-indicator flex-shrink-0">①</span>
-              <div><b>Confirmar entrada:</b> Ao finalizar, a expedição confirma o envio. Os pesos das patinhas são somados e alimentam o Estoque de Produto Acabado.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 11</span>
-      </div>
-    </div>
-
-
-    <!-- SLIDE 12: EXPEDIÇÃO - VISUALIZAÇÃO DO ESTOQUE -->
-    <div id="slide-12" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-package text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Visualização de Estoque de Produto Acabado</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <!-- Simulated Finished Stock Grid -->
-        <div class="col-span-3 bg-gray-50 p-4 rounded-xl border border-gray-200 relative my-auto shadow-inner">
-          <!-- Search bar -->
-          <div class="relative mb-3">
-            <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
-            <input onkeyup="filtrarEstoqueSlide11(this.value)" class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-xs" placeholder="Buscar por produto acabado...">
-          </div>
-
-          <div id="s11-estoque-lista" class="space-y-2 max-h-36 overflow-y-auto text-xs">
-            <!-- Dynamically updated -->
-          </div>
-
-          <!-- Simulated Modal details -->
-          <div id="s11-modal" class="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center p-3 hidden">
-            <div class="bg-white rounded-lg p-3 w-full shadow-lg border">
-              <div class="flex justify-between border-b pb-1.5 mb-1.5 text-xs">
-                <span id="s11-modal-titulo" class="font-bold">Lotes</span>
-                <span onclick="fecharModalEstoque()" class="text-red-500 font-bold cursor-pointer">✕</span>
-              </div>
-              <div class="text-[10px] space-y-1">
-                <div class="flex justify-between py-0.5">
-                  <span id="s11-modal-lote" class="font-mono">L-0807</span>
-                  <span id="s11-modal-val">08/09/2026</span>
-                  <span class="font-bold" id="s11-modal-qtd">258.70 kg</span>
+            <!-- Slide 1: Cover -->
+            <section class="slide active" id="slide-1">
+                <div class="cover-layout">
+                    <div class="cover-text">
+                        <img src="logo.png" alt="IMAC Logo" style="height: 120px; margin-bottom: 1.5rem; object-fit: contain;">
+                        <h1 class="cover-title">Café com a produção</h1>
+                        <p class="cover-subtitle">Helicoidal e Pães Especiais</p>
+                        <button class="btn btn-primary" onclick="nextSlide()">
+                            Iniciar Treinamento
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                    <div class="cover-graphics">
+                        <img src="capa_desenho_paes_cafe.jpg" style="width: 100%; border-radius: 20px; box-shadow: var(--shadow-lg);">
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            </section>
 
-        <div class="col-span-2 space-y-4">
-          <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-            <h4 class="font-bold text-amber-900 text-sm">Painel do Estoque Físico</h4>
-            <p class="text-xs text-amber-800 mt-1 leading-relaxed">
-              Aqui se visualiza as entradas consolidadas por lote de produto acabado.
-            </p>
-          </div>
-        </div>
-      </div>
+            <!-- Slide 2: Higiene Pessoal -->
+            <section class="slide" id="slide-2">
+                <h2 class="slide-title">Higiene Pessoal & Fardamento Semanal</h2>
+                <div class="slide-content">
+                    <div class="grid-higiene">
+                        <div class="higiene-cards">
+                            <p style="margin-bottom: 0.5rem; font-weight: 500; color: var(--color-primary); font-size: 1.2rem;">Práticas recomendadas para a área limpa:</p>
+                                              <div class="higiene-card" id="card-banho" onclick="toggleHigiene('banho')">
+                                <h3>
+                                    <span class="icon">1️⃣ 🚿</span> 
+                                     Banho Diário & Higiene
+                                </h3>
+                                <p>Essencial antes de iniciar o turno. Higiene corporal rigorosa e unhas curtas.</p>
+                            </div>
+                            
+                            <div class="higiene-card" id="card-barba" onclick="toggleHigiene('barba')">
+                                <h3>
+                                    <span class="icon">2️⃣ 🪒</span> 
+                                     Barba Feita
+                                </h3>
+                                <p>Barba e bigode raspados completamente para permitir a vedação adequada dos EPIs.</p>
+                            </div>
 
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 12</span>
-      </div>
+                            <div class="higiene-card" id="card-uniforme" onclick="toggleHigiene('uniforme')">
+                                <h3>
+                                    <span class="icon">3️⃣ 🥼</span> 
+                                     Vestir a Farda do Dia
+                                </h3>
+                                <p>Colocar a farda limpa correspondente ao dia da semana estampado.</p>
+                            </div>
+
+                            <div class="higiene-card" id="card-toucaMascara" onclick="toggleHigiene('toucaMascara')">
+                                <h3>
+                                    <span class="icon">4️⃣ 😷</span> 
+                                     Touca & Máscara Descartável
+                                </h3>
+                                <p>Uso da touca protetora de cabelo branca e da máscara cobrindo totalmente nariz e boca.</p>
+                            </div>
+                            
+                            <div class="higiene-card" id="card-balaclava" onclick="toggleHigiene('balaclava')">
+                                <h3>
+                                    <span class="icon">5️⃣ 🥷</span> 
+                                     Uso da balaclava correta
+                                </h3>
+                                <p>O capuz balaclava cobrindo cabelo, touca, máscara e pescoço por completo.</p>
+                            </div>
+                        </div>
+
+                        <div class="interactive-avatar-container">
+                            <div class="avatar-badge">Simulador de Higiene</div>
+                            <div class="avatar-graphics">
+                                <svg width="100%" height="250" viewBox="0 0 200 300" style="overflow: visible; display: block; margin: 0 auto;">
+                                    
+                                    <!-- Pants -->
+                                    <path id="avatar-pants" d="M 65 190 L 135 190 L 135 270 L 110 270 L 110 210 L 90 210 L 90 270 L 65 270 Z" fill="#334155" stroke="#1e293b" stroke-width="2" style="transition: all 0.4s ease;"></path>
+                                    
+                                    <!-- Boots -->
+                                    <rect id="avatar-boot-l" x="60" y="270" width="35" height="15" rx="3" fill="#475569" style="transition: all 0.4s ease;"></rect>
+                                    <rect id="avatar-boot-r" x="105" y="270" width="35" height="15" rx="3" fill="#475569" style="transition: all 0.4s ease;"></rect>
+
+                                    <!-- Torso -->
+                                    <rect id="avatar-body" x="60" y="100" width="80" height="90" rx="15" fill="#3b82f6" stroke="#1d4ed8" stroke-width="3" style="transition: all 0.4s ease;"></rect>
+                                    
+                                    <!-- Arms -->
+                                    <path id="avatar-sleeve-l" d="M 65 115 Q 35 130 35 180" fill="none" stroke="#3b82f6" stroke-width="18" stroke-linecap="round" style="transition: all 0.4s ease;"></path>
+                                    <path id="avatar-sleeve-r" d="M 135 115 Q 165 130 165 180" fill="none" stroke="#3b82f6" stroke-width="18" stroke-linecap="round" style="transition: all 0.4s ease;"></path>
+                                    
+                                    <!-- Hands -->
+                                    <circle cx="35" cy="180" r="9" fill="#ffd6ad"></circle>
+                                    <circle cx="165" cy="180" r="9" fill="#ffd6ad"></circle>
+
+                                    <!-- Neck -->
+                                    <rect x="90" y="80" width="20" height="25" fill="#ffd6ad"></rect>
+
+                                    <!-- Head Base -->
+                                    <circle cx="100" cy="65" r="35" fill="#ffd6ad" stroke="#e0a97c" stroke-width="2"></circle>
+                                    
+                                    <!-- Ears -->
+                                    <circle id="avatar-ear-l" cx="62" cy="65" r="8" fill="#ffd6ad" stroke="#e0a97c" stroke-width="2" style="transition: all 0.4s ease;"></circle>
+                                    <circle id="avatar-ear-r" cx="138" cy="65" r="8" fill="#ffd6ad" stroke="#e0a97c" stroke-width="2" style="transition: all 0.4s ease;"></circle>
+
+                                    <!-- Hair -->
+                                    <g id="avatar-hair" style="transition: all 0.4s ease;">
+                                        <path d="M 65 65 A 35 35 0 0 1 135 65 Q 100 35 65 65 Z" fill="#3e2723"></path>
+                                    </g>
+                                    
+                                    <!-- Sideburns -->
+                                    <g id="avatar-sideburns" style="transition: all 0.4s ease; transform-origin: 100px 65px;">
+                                        <path d="M 65 65 L 65 75 L 70 75 L 70 65 Z" fill="#3e2723"></path>
+                                        <path d="M 135 65 L 135 75 L 130 75 L 130 65 Z" fill="#3e2723"></path>
+                                    </g>
+
+                                    <!-- Beard -->
+                                    <g id="avatar-beard" style="transition: all 0.4s ease; transform-origin: 100px 75px;">
+                                        <path d="M 65 65 A 35 35 0 0 0 135 65 Q 100 92 65 65 Z" fill="#3e2723"></path>
+                                    </g>
+
+                                    <!-- Face details (Mouth) -->
+                                    <path d="M 90 82 Q 100 90 110 82" fill="none" stroke="#2e1c16" stroke-width="3" stroke-linecap="round"></path>
+                                    
+                                    <!-- Cap (Touca) -->
+                                    <g id="avatar-cap" style="opacity: 0; transition: all 0.4s ease; transform-origin: 100px 45px;">
+                                        <path d="M 58 60 C 45 10, 155 10, 142 60 Q 100 48 58 60 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"></path>
+                                        <path d="M 58 60 Q 100 48 142 60" fill="none" stroke="#cbd5e1" stroke-width="3"></path>
+                                    </g>
+
+                                    <!-- Dirt / Unhygienic Smudges -->
+                                    <g id="avatar-dirt" style="opacity: 1; transition: all 0.4s ease;">
+                                        <path d="M 75 75 Q 80 80 85 75" fill="none" stroke="#854d27" stroke-width="4" stroke-linecap="round" opacity="0.6"></path>
+                                        <path d="M 125 70 Q 120 75 115 70" fill="none" stroke="#854d27" stroke-width="3" stroke-linecap="round" opacity="0.6"></path>
+                                        <circle cx="80" cy="140" r="12" fill="#1e293b" opacity="0.3"></circle>
+                                        <circle cx="120" cy="160" r="8" fill="#1e293b" opacity="0.3"></circle>
+                                        <path d="M 33 186 L 33 190 M 37 186 L 37 190 M 163 186 L 163 190 M 167 186 L 167 190" stroke="#553" stroke-width="2"></path>
+                                    </g>
+
+                                    <!-- Mask Overlay (Under Balaclava) -->
+                                    <path id="avatar-mask-strap-l" d="M 75 85 Q 60 85 62 65" fill="none" stroke="#cbd5e1" stroke-width="1.5" style="opacity: 0; transition: all 0.4s ease; pointer-events: none;"></path>
+                                    <path id="avatar-mask-strap-r" d="M 125 85 Q 140 85 138 65" fill="none" stroke="#cbd5e1" stroke-width="1.5" style="opacity: 0; transition: all 0.4s ease; pointer-events: none;"></path>
+                                    <path id="avatar-mask" d="M 75 85 C 75 70, 125 70, 125 85 C 125 105, 75 105, 75 85 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" style="opacity: 0; transition: all 0.4s ease; pointer-events: none;"></path>
+
+                                    <!-- Balaclava -->
+                                    <g id="avatar-balaclava" style="opacity: 0; transition: all 0.4s ease; pointer-events: none; transform-origin: 100px 65px;">
+                                        <path d="M 55 120 C 40 50 50 5 100 5 C 150 5 160 50 145 120 C 130 115 100 115 100 115 C 100 115 70 115 55 120 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"></path>
+                                        <ellipse id="avatar-balaclava-cutout" cx="100" cy="65" rx="30" ry="12" fill="#ffd6ad" stroke="#cbd5e1" stroke-width="2"></ellipse>
+                                    </g>
+                                    
+                                    <!-- Eyes -->
+                                    <circle id="avatar-balaclava-eye-l" cx="85" cy="65" r="4.5" fill="#2e1c16"></circle>
+                                    <circle id="avatar-balaclava-eye-r" cx="115" cy="65" r="4.5" fill="#2e1c16"></circle>
+                                </svg>
+                            </div>
+                            <div class="avatar-feedback" id="avatar-feedback">Colaborador incompleto. Selecione as práticas!</div>
+                            <div id="higiene-error-msg" style="display: none; position: absolute; bottom: 8px; left: 8px; right: 8px; color: var(--color-danger); text-align: center; font-weight: 700; font-size: 0.9rem; background: rgba(231, 29, 54, 0.12); padding: 0.4rem; border-radius: var(--border-radius-sm); border: 1.5px solid var(--color-danger); transition: all 0.3s ease; z-index: 10;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: Modelo de Referência -->
+            <section class="slide" id="slide-3">
+                <h2 class="slide-title">Modelo de Referência do Fardamento</h2>
+                <div class="slide-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <div style="display: flex; gap: 2rem; justify-content: center; height: 60vh;">
+                        <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-primary); box-shadow: var(--shadow-md); cursor: pointer; display: flex; background: #fff;" onclick="openFullscreenImgSrc('IMG_20260709_073127617_MFNR.jpg')">
+                            <img src="IMG_20260709_073127617_MFNR.jpg" style="width: auto; height: 100%; object-fit: contain; max-width: 100%; filter: brightness(1.2) contrast(1.15) saturate(0.85);">
+                        </div>
+                        <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-primary); box-shadow: var(--shadow-md); cursor: pointer; display: flex; background: #fff;" onclick="openFullscreenImgSrc('IMG_20260709_073134502_MFNR.jpg')">
+                            <img src="IMG_20260709_073134502_MFNR.jpg" style="width: auto; height: 100%; object-fit: contain; max-width: 100%; filter: brightness(1.2) contrast(1.15) saturate(0.85);">
+                        </div>
+                    </div>
+                    <p style="font-size: 1.5rem; color: var(--color-text-muted); text-align: center; margin-top: 2rem; font-weight: 500;">
+                        Farda com o nome do dia correspondente e touca/balaclava branca cobrindo o pescoço.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slide 4: Fardamento Inadequado vs Adequado -->
+            <section class="slide" id="slide-4">
+                <h2 class="slide-title">Fardamento: Padrão vs Inadequado</h2>
+                <div class="slide-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    
+                    <div style="display: flex; gap: 4rem; justify-content: center; height: 60vh; width: 100%;">
+                        <div style="text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <h3 style="font-size: 1.5rem; color: var(--color-danger); margin-bottom: 1.5rem; font-weight: 700;">Fardamento Sujo (Risco)</h3>
+                            <div style="display: flex; gap: 1rem; height: 100%; justify-content: center;">
+                                <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-danger); box-shadow: var(--shadow-md); cursor: pointer; display: flex; background: #fff;" onclick="openFullscreenImgSrc('fardamento sujo.jpg')">
+                                    <img src="fardamento sujo.jpg" style="width: auto; height: 100%; object-fit: contain; max-width: 100%;">
+                                </div>
+                                <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-danger); box-shadow: var(--shadow-md); cursor: pointer; display: flex; background: #fff;" onclick="openFullscreenImgSrc('fardamento sujo (2).jpg')">
+                                    <img src="fardamento sujo (2).jpg" style="width: auto; height: 100%; object-fit: contain; max-width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center;">
+                            <h3 style="font-size: 1.5rem; color: var(--color-success); margin-bottom: 1.5rem; font-weight: 700;">Padrão IMAC (Limpo)</h3>
+                            <div style="display: flex; gap: 1rem; height: 100%; justify-content: center;">
+                                <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-success); box-shadow: var(--shadow-md); cursor: pointer; display: flex; background: #fff;" onclick="openFullscreenImgSrc('IMG_20260709_073127617_MFNR.jpg')">
+                                    <img src="IMG_20260709_073127617_MFNR.jpg" style="width: auto; height: 100%; object-fit: contain; max-width: 100%; filter: brightness(1.2) contrast(1.15) saturate(0.85);">
+                                </div>
+                                <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-success); box-shadow: var(--shadow-md); cursor: pointer; display: flex; background: #fff;" onclick="openFullscreenImgSrc('IMG_20260709_073134502_MFNR.jpg')">
+                                    <img src="IMG_20260709_073134502_MFNR.jpg" style="width: auto; height: 100%; object-fit: contain; max-width: 100%; filter: brightness(1.2) contrast(1.15) saturate(0.85);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: Regras de Conduta e Higiene -->
+            <section class="slide" id="slide-5">
+                <h2 class="slide-title">Regras de Conduta & Higiene Operacional</h2>
+                <div class="slide-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; align-items: start;">
+                        <div>
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.8rem;">Higienização Correta das Mãos</h3>
+                            <ul style="font-size: 1.15rem; padding-left: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
+                                <li>Aplicar sabonete e esfregar entre os dedos e dorso;</li>
+                                <li>Limpar unhas, punhos e dedões de forma rigorosa;</li>
+                                <li>Enxaguar bem e secar somente com papel toalha.</li>
+                            </ul>
+                            
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.8rem;">Lavagem Obrigatória das Botas</h3>
+                            <p style="font-size: 1.15rem; margin-bottom: 0.5rem; line-height: 1.4;">Use o lava-botas:</p>
+                            <ul style="font-size: 1.15rem; padding-left: 1.2rem; line-height: 1.4;">
+                                <li>Sempre que as botas estiverem com sujidades;</li>
+                                <li>Antes de entrar na área produtiva;</li>
+                                <li>Após o encerramento do expediente antes de guardar.</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: rgba(92, 61, 46, 0.03); border: 1px solid rgba(92, 61, 46, 0.1); border-radius: var(--border-radius-md); padding: 1.2rem;">
+                            <h3 style="font-size: 1.5rem; color: var(--color-danger); font-weight: 700; margin-bottom: 0.8rem; text-align: center;">🚫 Proibições Críticas no Setor</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 1.35rem; text-align: center; align-items: center;">
+                                <div style="padding: 1rem; background: #fff; border-radius: 8px; box-shadow: var(--shadow-sm);">
+                                    <h4 style="font-weight: 700; font-size: 1.5rem;">📱 Sem Celulares</h4>
+                                </div>
+                                <div style="padding: 1rem; background: #fff; border-radius: 8px; box-shadow: var(--shadow-sm);">
+                                    <h4 style="font-weight: 700; font-size: 1.5rem;">💨 Sem Perfume</h4>
+                                </div>
+                                <div style="padding: 1rem; background: #fff; border-radius: 8px; box-shadow: var(--shadow-sm);">
+                                    <h4 style="font-weight: 700; font-size: 1.5rem;">🤐 Sem Falar/Assoviar</h4>
+                                </div>
+                                <div style="padding: 1rem; background: #fff; border-radius: 8px; box-shadow: var(--shadow-sm);">
+                                    <h4 style="font-weight: 700; font-size: 1.5rem;">👕 Sem Roupas Pessoais</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Segurança Alimentar e Perigos -->
+            <section class="slide" id="slide-6">
+                <h2 class="slide-title">Segurança Alimentar: Perigos & DTAs</h2>
+                <div class="slide-content">
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem;">
+                        <div>
+                            <p style="font-size: 1.2rem; margin-bottom: 1rem;">Um <strong>Alimento Seguro</strong> é livre de contaminantes e não apresenta riscos à saúde. A negligência causa <strong>DTAs</strong> (Doenças Transmitidas por Alimentos).</p>
+                            
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.5rem;">Os 3 Tipos de Perigos Alimentares:</h3>
+                            <ul style="font-size: 1.15rem; padding-left: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
+                                <li><strong>Físico:</strong> Poeiras, cabelos, metais, pedaços de plástico ou insetos na massa.</li>
+                                <li><strong>Químico:</strong> Resíduos de detergentes, sanitizantes ou óleo lubrificante.</li>
+                                <li><strong>Microbiológico:</strong> Proliferação de bactérias patogênicas ou deteriorantes.</li>
+                            </ul>
+
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.5rem;">O Controle de Pragas (Os 4 As):</h3>
+                            <p style="font-size: 1.15rem; line-height: 1.4;">Para evitar vetores e pragas urbanas, devemos cortar os 4 fatores essenciais de proliferação: <strong>Água</strong>, <strong>Acesso</strong>, <strong>Alimento</strong> e <strong>Abrigo</strong>.</p>
+                        </div>
+
+                        <div style="background: var(--color-card-bg); border: 1.5px solid var(--color-primary); border-radius: var(--border-radius-md); padding: 1.2rem; display: flex; flex-direction: column; justify-content: center;">
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; text-align: center; margin-bottom: 0.8rem;">🌡️ Binômio Tempo x Temperatura</h3>
+                            <p style="font-size: 1.35rem; margin-bottom: 0.5rem; line-height: 1.4;">
+                                <strong>Zona de Perigo (5°C a 60°C):</strong> Faixa onde os microrganismos se multiplicam em minutos de forma exponencial.
+                            </p>
+                            <p style="font-size: 1.35rem; margin-bottom: 0.5rem; line-height: 1.4;">
+                                <strong>Congelamento (-18°C ou menos):</strong> Inativa a multiplicação das bactérias na massa de pão congelado.
+                            </p>
+                            <p style="font-size: 1.35rem; line-height: 1.4;">
+                                <strong>Calor de Segurança (82°C):</strong> Temperatura mínima que o centro do alimento deve atingir no assamento.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: Contaminação Cruzada & EPIs -->
+            <section class="slide" id="slide-7">
+                <h2 class="slide-title">Contaminação Cruzada e EPIs</h2>
+                <div class="slide-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h3 style="font-size: 1.5rem; color: var(--color-danger); font-weight: 700; margin-bottom: 0.5rem;">O que é Contaminação Cruzada?</h3>
+                            <p style="font-size: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
+                                A contaminação cruzada ocorre quando os manipuladores utilizam o mesmo utensílio ou superfície em diferentes alimentos ou estágios. Exemplo: <strong>Uso de luvas</strong> sem trocar ao mudar de tarefa ou ao manusear diferentes lotes, ou usar a mesma faca sem lavar.
+                            </p>
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.5rem;">Quando trocar as luvas?</h3>
+                            <ul style="font-size: 1.15rem; padding-left: 1.2rem; margin-bottom: 1rem; line-height: 1.4;">
+                                <li>Sempre que estiverem sujas ou rasgadas;</li>
+                                <li>Ao mudar de tarefa (ex: após pegar lixo ou tocar no rosto);</li>
+                                <li>Após espirrar, tossir ou higienizar o nariz.</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--color-card-bg); border: 1.5px solid var(--color-primary); border-radius: var(--border-radius-md); padding: 1.2rem;">
+                            <h3 style="font-size: 1.5rem; color: var(--color-primary); font-weight: 700; text-align: center; margin-bottom: 0.8rem;">O Que são EPIs?</h3>
+                            <p style="font-size: 1.15rem; text-align: center; line-height: 1.4; margin-bottom: 1.5rem;">
+                                Equipamentos de Proteção Individual (EPIs) são dispositivos e vestimentas utilizados para <strong>proteger o trabalhador contra riscos</strong> e garantir a <strong>segurança do alimento</strong>. Luvas, toucas, balaclavas e máscaras são barreiras essenciais para evitar que contaminações do nosso corpo cheguem à massa.
+                            </p>
+                            <img src="icon_epis.jpg" style="width: 120px; height: 120px; border-radius: 50%; box-shadow: var(--shadow-md); object-fit: cover; display: block; margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: Limpeza, Sanitização e Mãos -->
+            <section class="slide" id="slide-8">
+                <h2 class="slide-title">Higiene: Limpeza x Sanitização</h2>
+                <div class="slide-content">
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem;">
+                        <div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="flex: 1; background: #fff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-accent);">
+                                    <h4 style="color: var(--color-primary); margin-bottom: 0.3rem;">Limpar</h4>
+                                    <p style="font-size: 1.2rem; line-height: 1.4;">Remoção da sujidade visível (massa, poeira, gordura) com detergente e água.</p>
+                                </div>
+                                <div style="flex: 1; background: #fef9c3; padding: 1rem; border-radius: 8px;">
+                                    <h4 style="color: #ca8a04; font-weight: bold; margin-bottom: 0.5rem;">Sanitização</h4>
+                                    <p style="font-size: 1.35rem; line-height: 1.4;">Processo de desinfecção para <strong>eliminar microrganismos invisíveis</strong>. Só é eficiente se a limpeza for bem feita antes. Ex: uso de álcool.</p>
+                                </div>
+                            </div>
+                            <h3 style="font-size: 1.35rem; color: var(--color-primary); font-weight: 700; margin-bottom: 0.5rem;">Quando Lavar as Mãos?</h3>
+                            <ul style="font-size: 1.15rem; padding-left: 1.2rem; line-height: 1.4; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                <li>Antes e durante o preparo;</li>
+                                <li>Após usar o banheiro;</li>
+                                <li>Antes de entrar na produção;</li>
+                                <li>Após tocar em materiais contaminados;</li>
+                                <li>Após utilizar o lava-botas.</li>
+                            </ul>
+                        </div>
+                        <div style="text-align: center; border-left: 1px solid #ccc; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <h3 style="font-size: 1.5rem; color: var(--color-danger); font-weight: 700; margin-bottom: 0.8rem;">Por que lavar as mãos?</h3>
+                            <p style="font-size: 1.2rem; line-height: 1.4; margin-bottom: 1.5rem;">
+                                Além de impedir a contaminação cruzada nos pães, protege você (colaborador) contra infecções e problemas dermatológicos (como dermatite de contato).
+                            </p>
+                            <img src="icon_handwash.jpg" style="width: 120px; height: 120px; border-radius: 50%; box-shadow: var(--shadow-md); object-fit: cover; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Importância do Start da Produção -->
+            <section class="slide" id="slide-9">
+                <h2 class="slide-title">Importância do Start da Produção</h2>
+                <div class="slide-content" style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
+                    <p style="font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--color-primary); font-weight: 600; text-align: center;">
+                        O Start da Produção é o registro inicial que garante a estabilidade de todo o processo e a conformidade do produto:
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 1100px; margin: 0 auto; width: 100%;">
+                        <!-- Coluna 1: Qualidade e Rastreabilidade -->
+                        <div style="background: #faf8f5; border-left: 5px solid var(--color-accent); padding: 1.2rem; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; box-shadow: var(--shadow-sm);">
+                            <h3 style="color: var(--color-primary); font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;">Garantia & Rastreabilidade</h3>
+                            <ul style="font-size: 1.1rem; padding-left: 1.2rem; line-height: 1.5;">
+                                <li style="margin-bottom: 0.5rem;"><strong>Garantir Rastreabilidade:</strong> Histórico completo do lote produzido.</li>
+                                <li style="margin-bottom: 0.5rem;"><strong>Garantir Qualidade do Produto:</strong> Padronização do início ao fim.</li>
+                                <li><strong>Origem de Desvios:</strong> Em caso de algum problema com performance, o start tem informações cruciais para determinar a origem.</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Coluna 2: Parâmetros Controlados -->
+                        <div style="background: #faf8f5; border-left: 5px solid var(--color-primary-light); padding: 1.2rem; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; box-shadow: var(--shadow-sm);">
+                            <h3 style="color: var(--color-primary); font-size: 1.3rem; margin-bottom: 0.8rem; font-weight: 700;">Parâmetros e Processos Controlados</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; font-size: 1.05rem; line-height: 1.4;">
+                                <div>
+                                    <p>🥖 <strong>Ponto da massa</strong></p>
+                                    <p>🌡️ <strong>Temp. da massa</strong></p>
+                                    <p>💧 <strong>Temp. da água</strong></p>
+                                </div>
+                                <div>
+                                    <p>⏱️ <strong>Entrada no túnel</strong></p>
+                                    <p>⚖️ <strong>Peso ideal do pão</strong></p>
+                                    <p>⚙️ <strong>Controle de processos</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Reflexão -->
+            <section class="slide" id="slide-10">
+                <h2 class="slide-title">Reflexão: Atenção ao Processo</h2>
+                <div class="slide-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;">
+                    
+                    <div style="display: flex; justify-content: center; width: 100%; height: 480px;">
+                        <div style="text-align: center; display: flex; flex-direction: column; width: 100%;">
+                            <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-primary); box-shadow: var(--shadow-md); cursor: pointer; flex: 1; display: flex; background: #fff;" onclick="openFullscreenImgSrc('Pão receita errada.jpg')">
+                                <img src="Pão receita errada.jpg" style="width: 100%; height: 100%; object-fit: contain;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.5rem; max-width: 700px; margin-top: 1rem; color: var(--color-text-muted); font-weight: 600;">
+                        O que vocês acham deste pão?
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slide 11: Reflexão 2 -->
+            <section class="slide" id="slide-11">
+                <h2 class="slide-title">Reflexão: Atenção ao Processo</h2>
+                <div class="slide-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;">
+                    
+                    <div style="display: flex; justify-content: center; width: 100%; height: 480px;">
+                        <div style="text-align: center; display: flex; flex-direction: column; width: 100%;">
+                            <div style="border-radius: var(--border-radius-md); overflow: hidden; border: 4px solid var(--color-primary); box-shadow: var(--shadow-md); cursor: pointer; flex: 1; display: flex; background: #fff;" onclick="openFullscreenImgSrc('Pão bom.jpeg')">
+                                <img src="Pão bom.jpeg" style="width: 100%; height: 100%; object-fit: contain;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.5rem; max-width: 700px; margin-top: 1rem; color: var(--color-text-muted); font-weight: 600;">
+                        E o que vocês acham deste pão?
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slide 12: Pontos Críticos -->
+            <section class="slide" id="slide-12">
+                <h2 class="slide-title">Pontos Críticos</h2>
+                <div class="slide-content">
+                    <p style="text-align: center; margin-bottom: 1.5rem; color: var(--color-danger); font-weight: 600; font-size: 1.35rem;">
+                        O descumprimento do checklist e das normas de higienização gera problemas graves e imediatos:
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; max-width: 1300px; margin: 0 auto;">
+                        
+                        <div class="produto-item" style="border-left-color: #F44336; flex-direction: column; text-align: center; padding: 0.8rem; box-shadow: var(--shadow-md); border-radius: var(--border-radius-md);">
+                            <img src="massa_piso_remaster.jpg" style="width: 100%; height: 160px; object-fit: contain; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;" onclick="openFullscreenImgSrc(this.src)">
+                            <h4 style="color: #F44336; margin-bottom: 0.3rem; font-size: 1.25rem;">Massa no Piso</h4>
+                            <p style="font-size: 1.0rem; line-height: 1.3;">Atrai pragas e contamina o ambiente.</p>
+                        </div>
+
+                        <div class="produto-item" style="border-left-color: #F44336; flex-direction: column; text-align: center; padding: 0.8rem; box-shadow: var(--shadow-md); border-radius: var(--border-radius-md);">
+                            <img src="ralo_sujo_remaster.jpg" style="width: 100%; height: 160px; object-fit: contain; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;" onclick="openFullscreenImgSrc(this.src)">
+                            <h4 style="color: #F44336; margin-bottom: 0.3rem; font-size: 1.25rem;">Ralo Sujo</h4>
+                            <p style="font-size: 1.0rem; line-height: 1.3;">Gera contaminação cruzada e mau odor.</p>
+                        </div>
+
+                        <div class="produto-item" style="border-left-color: #F44336; flex-direction: column; text-align: center; padding: 0.8rem; box-shadow: var(--shadow-md); border-radius: var(--border-radius-md);">
+                            <img src="oleo_freezer_remaster.jpg" style="width: 100%; height: 160px; object-fit: contain; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;" onclick="openFullscreenImgSrc(this.src)">
+                            <h4 style="color: #F44336; margin-bottom: 0.3rem; font-size: 1.25rem;">Sujeira em Freezer</h4>
+                            <p style="font-size: 1.0rem; line-height: 1.3;">Falta de disciplina degrada equipamentos.</p>
+                        </div>
+
+                        <div class="produto-item" style="border-left-color: #F44336; flex-direction: column; text-align: center; padding: 0.8rem; box-shadow: var(--shadow-md); border-radius: var(--border-radius-md);">
+                            <img src="freezer_sujo.jpg" style="width: 100%; height: 160px; object-fit: contain; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;" onclick="openFullscreenImgSrc(this.src)">
+                            <h4 style="color: #F44336; margin-bottom: 0.3rem; font-size: 1.25rem;">Freezer Pós Produção</h4>
+                            <p style="font-size: 1.0rem; line-height: 1.3;">Freezers sujo após a produção.</p>
+                        </div>
+
+                        <div class="produto-item" style="border-left-color: #F44336; flex-direction: column; text-align: center; padding: 0.8rem; box-shadow: var(--shadow-md); border-radius: var(--border-radius-md);">
+                            <img src="Reclamacao cliente.jpg" style="width: 100%; height: 160px; object-fit: contain; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;" onclick="openFullscreenImgSrc(this.src)">
+                            <h4 style="color: #F44336; margin-bottom: 0.3rem; font-size: 1.25rem;">Contaminação Física</h4>
+                            <p style="font-size: 1.0rem; line-height: 1.3;">Sujidade na massa vira reclamação do cliente.</p>
+                        </div>
+
+                    </div>
+                    <p style="text-align: center; font-weight: 700; color: var(--color-primary); margin-top: 1.5rem; font-size: 1.5rem; letter-spacing: 0.5px;">
+                        A Qualidade Começa em Cada Um de Nós!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slide 13: Encerramento -->
+            <section class="slide" id="slide-13">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;">
+                    <img src="logo.png" alt="IMAC Logo" style="height: 140px; margin-bottom: 2rem; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(92, 61, 46, 0.15));">
+                    <h1 style="font-size: 3.5rem; font-weight: 900; color: var(--color-primary); margin-bottom: 1rem;">Obrigado pela Atenção!</h1>
+                    <p style="font-size: 1.5rem; color: var(--color-text-muted); font-weight: 500; max-width: 600px; margin-bottom: 2rem;">
+                        A qualidade de cada pão que chega à mesa dos nossos clientes começa na nossa dedicação e atenção aos processos.
+                    </p>
+                    <div style="width: 80px; height: 4px; background: var(--color-accent); border-radius: 2px;"></div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Navigation Controls footer -->
+        <footer class="controls-container">
+            <button class="btn btn-secondary" id="btnPrev" onclick="prevSlide()" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Anterior
+            </button>
+            <span style="font-weight: 700; color: var(--color-primary); letter-spacing: 1.5px; font-size: 1.15rem;">CONTROLE DE QUALIDADE</span>
+            <button class="btn btn-primary" id="btnNext" onclick="nextSlide()">
+                Próximo
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </footer>
     </div>
 
-
-        <!-- SLIDE 13: PAINEL DA TV DO MONITORAMENTO -->
-    <div id="slide-13" class="slide-page p-8">
-      <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-television text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">Painel da TV - Monitoramento Industrial</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-6 items-center my-auto">
-        <!-- Simulated TV Screen -->
-        <div class="col-span-3 bg-stone-950 text-white p-4 rounded-xl border-4 border-stone-800 shadow-2xl relative my-auto">
-          <div class="flex justify-between items-center border-b border-stone-800 pb-2 mb-2 text-xs">
-            <span class="font-black text-amber-400 tracking-wider">IMAC MONITOR DA FÁBRICA</span>
-            <span class="text-green-500 font-bold animate-pulse">● TRANSMITINDO AO VIVO</span>
-          </div>
-          
-          <div class="grid grid-cols-4 gap-2 mb-3 text-center text-[10px]">
-            <div class="bg-stone-900 p-1.5 rounded border border-stone-800">
-              <div class="text-[8px] text-stone-400">Batidas Hoje</div>
-              <div class="font-black text-amber-400"><span id="s13-batidas">3</span> / 10</div>
-            </div>
-            <div class="bg-stone-900 p-1.5 rounded border border-stone-800">
-              <div class="text-[8px] text-stone-400">Velocidade Média</div>
-              <div class="font-black text-amber-400">7.2 min</div>
-            </div>
-            <div class="bg-stone-900 p-1.5 rounded border border-stone-800">
-              <div class="text-[8px] text-stone-400">Última Batida</div>
-              <div class="font-black text-amber-400">Há 04:12</div>
-            </div>
-            <div class="bg-stone-900 p-1.5 rounded border border-stone-800">
-              <div class="text-[8px] text-stone-400">Fila do Túnel</div>
-              <div class="font-black text-blue-400">1 OP</div>
-            </div>
-          </div>
-
-          <div class="bg-stone-900 p-3 rounded-lg border border-stone-800 space-y-2 text-[10px]">
-            <div class="flex justify-between items-center bg-stone-800 p-2 rounded">
-              <div>
-                <div class="font-bold text-amber-300 text-xs">PAO FRANCES</div>
-                <div class="text-[8px] text-stone-500">Masseira 1 · OP 63121</div>
-              </div>
-              <div class="text-right">
-                <span class="font-bold text-white">Batidas: <span id="s13-batidas-ativo">3</span>/10</span>
-                <div class="text-amber-500 font-bold text-[8px]">Queda Estimada: <span id="s13-queda">19:05</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-span-2 space-y-4 text-xs">
-          <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-            <h4 class="font-bold text-amber-900 text-sm">Visibilidade Total</h4>
-            <p class="text-xs text-amber-800 mt-1 leading-relaxed">
-              A TV exibe dinamicamente o progresso das batidas, a velocidade média de produção e o lote atual conforme os operadores atualizam as suas telas.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
-        <span class="text-gray-400 text-sm">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | JAN GABRIEL - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-[10px]">SLIDE 13</span>
-      </div>
+    <!-- Image Fullscreen Modal -->
+    <div id="imgModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; cursor: zoom-out;" onclick="closeFullscreenImg()">
+        <img id="imgModalTarget" src="" style="max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
     </div>
 
-    <!-- SLIDE 14: QR CODE & ENCERRAMENTO -->
-    <div id="slide-14" class="slide-page p-10 bg-gradient-to-br from-white to-amber-50/20 relative flex flex-col justify-between">
-      <!-- Header inside slide 14 -->
-      <div class="flex justify-between items-center border-b border-gray-250 pb-3 mb-4 w-full">
-        <div class="flex items-center gap-2">
-          <i class="ph ph-rocket-launch text-2xl text-amber-600"></i>
-          <h2 class="font-bold text-xl text-gray-800">O Futuro Começa Agora</h2>
-        </div>
-        <img src="logo.png" alt="Logo" class="h-8">
-      </div>
-
-      <div class="grid grid-cols-5 gap-8 items-center my-auto w-full">
-        <!-- Left: QR Code -->
-        <div class="col-span-2 flex flex-col items-center justify-center space-y-4">
-          <h3 class="font-black text-lg text-stone-800 uppercase tracking-wide text-center">Acesse o Sistema</h3>
-          <!-- Logo layout wrapper for QR code -->
-          <div class="relative inline-block bg-white p-3 rounded-2xl border-4 border-[#e8c667] shadow-xl">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&amp;data=https://jangabrielsg-bit.github.io/teste/&amp;ecc=H&amp;color=6b4423&amp;bgcolor=ffffff" alt="QR Code App" class="h-60 w-60 rounded-lg">
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <img src="logo.png" alt="Logo" class="h-10 bg-white p-0.5 rounded-lg shadow border border-gray-100">
-            </div>
-          </div>
-          <p class="text-[10px] text-gray-500 font-bold text-center leading-tight">Escaneie o código para acessar a tela inicial do aplicativo no seu celular.</p>
-        </div>
-
-        <!-- Right: Motivational Message -->
-        <div class="col-span-3 bg-gradient-to-br from-[#3d2512] to-[#1e1208] text-white p-8 rounded-2xl shadow-xl border border-amber-500/20 space-y-6 relative overflow-hidden flex flex-col justify-center min-h-[280px]">
-          <!-- Decorative subtle ambient glow -->
-          <div class="absolute -right-10 -top-10 w-28 h-28 bg-amber-500/10 rounded-full blur-2xl"></div>
-          
-          <div class="space-y-2">
-            <div class="h-1 w-12 bg-amber-500 mb-2"></div>
-            <h3 class="font-black text-2xl text-amber-400 leading-tight uppercase tracking-wide">
-              Indústria 4.0
-            </h3>
-          </div>
-          
-          <div class="space-y-4 text-gray-200">
-            <p class="text-base font-medium leading-relaxed">
-              A tecnologia conecta nossos processos, melhorando a produtividade e gestão visual mas é o trabalho de cada um que garante a qualidade de nossos produtos e a satisfação de nossos clientes.
-            </p>
-            <p class="text-lg font-black text-amber-300 font-sans tracking-wide uppercase">
-              O futuro da produção IMAC começa agora.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between items-center border-t border-gray-150 pt-3 mt-4 w-full">
-        <span class="text-gray-400 text-xs font-bold uppercase">INDÚSTRIA DE MASSAS CONGELADAS - IMAC | Jan Gabriel - ANALISTA DA QUALIDADE</span>
-        <span class="bg-amber-500 text-stone-900 font-bold px-2 py-0.5 rounded text-xs">SLIDE 14</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Presentation Control Bar (no-print) -->
-  <div class="no-print fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex justify-between items-center z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
-    <div class="flex items-center gap-2">
-      <button onclick="mudarSlide(-1)" class="bg-[#6b4423] hover:bg-[#a78355] text-white p-2 rounded-lg font-bold transition flex items-center gap-1">
-        <i class="ph ph-caret-left-bold"></i> Anterior
-      </button>
-      <span class="text-sm font-bold text-stone-800" id="indicador-slide">Slide 1 de 14</span>
-      <button onclick="mudarSlide(1)" class="bg-[#6b4423] hover:bg-[#a78355] text-white p-2 rounded-lg font-bold transition flex items-center gap-1">
-        Próximo <i class="ph ph-caret-right-bold"></i>
-      </button>
-    </div>
-    <div class="text-xs text-gray-500 font-medium flex items-center gap-4">
-      <span>Atalhos: <span class="bg-gray-100 px-1 py-0.5 rounded font-mono font-bold">Setas ◄ / ►</span> ou <span class="bg-gray-100 px-1 py-0.5 rounded font-mono font-bold">Espaço</span></span>
-    </div>
-  </div>
-
-  <!-- Interactivity Shared Script -->
-  <script>
-    // Global simulation state
-    const sim = {
-      produto: "PAO FRANCES",
-      op: "63121",
-      metaLotes: 10,
-      batidas: 3,
-      horaEntrada: "18:30",
-      horaTermino: "19:05",
-      lote: "L-0807",
-      validade: "2026-09-08",
-      patinhas: [
-        { id: 1, operador: "João", peso: 130.50, lote: "L-0807", validade: "2026-09-08" },
-        { id: 2, operador: "João", peso: 128.20, lote: "L-0807", validade: "2026-09-08" }
-      ],
-      massaPerdidaProd: 1.5,
-      peDeMassa: 5.0,
-      observacoes: "",
-      paradaAtiva: false,
-      estoqueConfirmado: false
-    };
-
-    let slideAtual = 1;
-    const totalSlides = 14;
-
-    function mudarSlide(delta) {
-      if (!document.body.classList.contains('slide-mode')) return;
-      
-      const slides = document.querySelectorAll('.slide-page');
-      slides[slideAtual - 1].classList.remove('active-slide');
-      
-      slideAtual += delta;
-      if (slideAtual < 1) slideAtual = 1;
-      if (slideAtual > totalSlides) slideAtual = totalSlides;
-      
-      slides[slideAtual - 1].classList.add('active-slide');
-      document.getElementById('indicador-slide').innerText = `Slide ${slideAtual} de ${totalSlides}`;
-    }
-
-    function toggleModoApresentacao() {
-      const isSlide = document.body.classList.contains('slide-mode');
-      const btn = document.getElementById('btn-modo');
-      
-      if (isSlide) {
-        document.body.classList.remove('slide-mode');
-        btn.querySelector('span').innerText = "Modo Apresentação";
-        document.querySelectorAll('.slide-page').forEach(el => el.classList.add('active-slide'));
-      } else {
-        document.body.classList.add('slide-mode');
-        btn.querySelector('span').innerText = "Modo Rolagem";
-        document.querySelectorAll('.slide-page').forEach((el, idx) => {
-          if (idx === slideAtual - 1) el.classList.add('active-slide');
-          else el.classList.remove('active-slide');
-        });
-      }
-    }
-
-    function entrarTelaCheia() {
-      const elem = document.getElementById("presentation-area");
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) { /* Safari */
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) { /* IE11 */
-        elem.msRequestFullscreen();
-      }
-    }
-
-    // Keyboard navigation listener
-    document.addEventListener('keydown', (e) => {
-      if (!document.body.classList.contains('slide-mode')) return;
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-        e.preventDefault();
-        mudarSlide(1);
-      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        mudarSlide(-1);
-      }
-    });
-
-    function atualizarTudo() {
-      // Slide 4: Masseiro
-      document.getElementById('s4-feitos').innerText = sim.batidas;
-      document.getElementById('s4-progresso').style.width = (sim.batidas * 10) + '%';
-      
-      // Slide 5 & 6: Túnel
-      document.getElementById('s5-hora-entrada').value = sim.horaEntrada;
-      document.getElementById('s6-hora-entrada').value = sim.horaEntrada;
-      document.getElementById('s6-hora-termino').value = sim.horaTermino;
-      
-      // Slide 7: Parada e status
-      const btnP = document.getElementById('s12-btn-parada');
-      const statusP = document.getElementById('s12-status-parada');
-      if (sim.paradaAtiva) {
-        btnP.className = "w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-xl text-lg transition-colors flex items-center justify-center gap-2 animate-pulse relative";
-        btnP.innerHTML = "🚨 RETOMAR PRODUÇÃO (Desligar Parada) <span class='absolute -top-3 -right-3 legend-indicator'>①</span>";
-        statusP.innerHTML = "<b>Status da Linha:</b> Parada de emergência ativa! Cronômetro de tempo de produção pausado...";
-      } else {
-        btnP.className = "w-full bg-red-100 hover:bg-red-200 text-red-800 border-2 border-red-500 font-black py-4 rounded-xl text-lg transition-colors flex items-center justify-center gap-2 relative";
-        btnP.innerHTML = "🚨 ACIONAR PARADA DE EMERGÊNCIA <span class='absolute -top-3 -right-3 legend-indicator'>①</span>";
-        statusP.innerHTML = "<b>Status da Linha:</b> Produzindo normalmente.";
-      }
-
-      // Slide 8: Fechamento
-      document.getElementById('s8-feitos-val').innerText = sim.batidas;
-      document.getElementById('s7-obs').value = sim.observacoes;
-      
-      // Slide 9: Embaladora
-      document.getElementById('s9-lote').innerText = sim.lote;
-      document.getElementById('s9-entrada').innerText = sim.horaEntrada;
-      document.getElementById('s9-termino').innerText = sim.horaTermino;
-      
-      // Slide 11: Conferência
-      const totalReal = sim.patinhas.reduce((acc, p) => acc + p.peso, 0);
-      document.getElementById('s10-real-camara').innerText = totalReal.toFixed(2);
-      const teorico = 260.00;
-      const div = teorico > 0 ? ((totalReal - teorico) / teorico * 100) : 0;
-      const divEl = document.getElementById('s10-divergencia');
-      divEl.innerText = (div >= 0 ? '+' : '') + div.toFixed(2) + '%';
-      divEl.className = div < 0 ? 'font-black text-red-600' : 'font-black text-green-600';
-      
-      // Render list of patinhas
-      const listaEl = document.getElementById('s10-lista-patinhas');
-      listaEl.innerHTML = '';
-      sim.patinhas.forEach(p => {
-        listaEl.innerHTML += `
-          <div class="p-2 flex justify-between">
-            <span>Patinha #${p.id} (${sim.produto}) - ${p.lote} (${p.operador})</span>
-            <span class="font-bold">${p.peso.toFixed(2)} kg</span>
-          </div>
-        `;
-      });
-      
-      // Slide 12: Estoque
-      const estoqueEl = document.getElementById('s11-estoque-lista');
-      estoqueEl.innerHTML = '';
-      if(sim.estoqueConfirmado) {
-        estoqueEl.innerHTML = `
-          <div onclick="abrirModalEstoque('${sim.produto} (CONGELADO)', '${totalReal.toFixed(2)} kg')" class="bg-white p-3 rounded-lg border hover:bg-gray-50 cursor-pointer flex justify-between items-center shadow-sm">
-            <span class="font-bold text-stone-800">${sim.produto} (CONGELADO)</span>
-            <div class="flex items-center gap-2">
-              <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-black">${totalReal.toFixed(2)} kg</span>
-              <i class="ph ph-list-magnifying-glass text-gray-400"></i>
-            </div>
-          </div>
-        `;
-      } else {
-        estoqueEl.innerHTML = `<div class="text-center text-gray-400 py-4">Nenhum estoque consolidado hoje. Confirme a entrada no Slide 11 para atualizar!</div>`;
-      }
-      
-      // Slide 13: TV
-      document.getElementById('s13-batidas').innerText = sim.batidas;
-      document.getElementById('s13-batidas-ativo').innerText = sim.batidas;
-      document.getElementById('s13-queda').innerText = sim.horaTermino || 'Pendente';
-    }
-
-    // Interactions
-    function selecionarPerfil(nome, desc) {
-      document.getElementById('login-perfil-nome').innerText = nome;
-      document.getElementById('login-perfil-desc').innerText = desc;
-    }
-    
-    function atualizarHoraEntrada(val) {
-      sim.horaEntrada = val;
-      atualizarTudo();
-    }
-    
-    function atualizarHoraTermino(val) {
-      sim.horaTermino = val;
-      atualizarTudo();
-    }
-    
-    function atualizarObs(val) {
-      sim.observacoes = val;
-      atualizarTudo();
-    }
-    
-    function ajustarBatida(val) {
-      sim.batidas = Math.max(0, Math.min(sim.metaLotes, sim.batidas + val));
-      atualizarTudo();
-    }
-
-    // Custom toast notification system to prevent exiting fullscreen
-    function mostrarNotificacao(msg, tipo = 'success') {
-      let container = document.getElementById('notificacao-container');
-      if (!container) {
-        container = document.createElement('div');
-        container.id = 'notificacao-container';
-        container.className = 'fixed top-6 right-6 z-[9999] flex flex-col gap-2 pointer-events-none';
-        document.getElementById('presentation-area').appendChild(container);
-      }
-      
-      const toast = document.createElement('div');
-      toast.className = 'bg-stone-900 text-white px-4 py-3 rounded-xl shadow-lg border border-amber-500/30 flex items-center gap-2 transform translate-y-2 opacity-0 transition-all duration-300 pointer-events-auto max-w-sm';
-      
-      let icon = '<i class="ph ph-check-circle text-amber-500 text-xl flex-shrink-0"></i>';
-      if (tipo === 'error') {
-        icon = '<i class="ph ph-warning-circle text-red-500 text-xl flex-shrink-0"></i>';
-      }
-      
-      toast.innerHTML = `
-        ${icon}
-        <div class="text-xs font-bold font-sans text-white">${msg}</div>
-      `;
-      
-      container.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
-      }, 10);
-      
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-2', 'opacity-0');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-
-    function digitarPesoInterativoS9() {
-      let modal = document.getElementById('custom-prompt-modal');
-      if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'custom-prompt-modal';
-        modal.className = 'fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4 font-sans';
-        modal.innerHTML = `
-          <div class="bg-white rounded-2xl p-6 w-full max-w-xs border border-amber-500 shadow-2xl space-y-4">
-            <h4 class="font-black text-stone-800 text-sm">Digitar Peso da Patinha</h4>
-            <p class="text-xs text-gray-500">Insira o peso líquido em kg:</p>
-            <input type="number" step="0.01" id="custom-prompt-input" value="130.50" class="w-full p-2.5 border border-amber-300 rounded-lg text-center font-black text-lg bg-amber-50 text-amber-900">
-            <div class="flex gap-2">
-              <button onclick="fecharPromptPeso(false)" class="flex-1 bg-gray-100 hover:bg-gray-200 text-stone-700 font-bold py-2 rounded-lg text-xs transition">Cancelar</button>
-              <button onclick="fecharPromptPeso(true)" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-lg text-xs transition">Confirmar</button>
-            </div>
-          </div>
-        `;
-        document.getElementById('presentation-area').appendChild(modal);
-      }
-      const curPeso = document.getElementById('s9-peso-op').innerText;
-      document.getElementById('custom-prompt-input').value = curPeso;
-      modal.classList.remove('hidden');
-      setTimeout(() => {
-        const input = document.getElementById('custom-prompt-input');
-        input.focus();
-        input.select();
-      }, 50);
-    }
-
-    function fecharPromptPeso(confirmar) {
-      const modal = document.getElementById('custom-prompt-modal');
-      if (modal) {
-        if (confirmar) {
-          const v = document.getElementById('custom-prompt-input').value;
-          if (v && !isNaN(v)) {
-            document.getElementById('s9-peso-op').innerText = parseFloat(v).toFixed(2);
-            mostrarNotificacao('Peso atualizado!');
-          } else {
-            mostrarNotificacao('Peso inválido!', 'error');
-          }
-        }
-        modal.classList.add('hidden');
-      }
-    }
-    
-    function adicionarPatinhaInterativa() {
-      const op = document.getElementById('s9-nome-op').value;
-      const lote = document.getElementById('s9-lote-op').value;
-      const peso = parseFloat(document.getElementById('s9-peso-op').innerText);
-      if(!op) { mostrarNotificacao("Insira o nome do operador!", "error"); return; }
-      
-      sim.patinhas.push({
-        id: sim.patinhas.length + 1,
-        operador: op,
-        peso: peso,
-        lote: lote,
-        validade: document.getElementById('s9-val-op').value
-      });
-      mostrarNotificacao("Patinha adicionada para conferência!");
-      atualizarTudo();
-    }
-    
-    function confirmarEntradaEstoque() {
-      sim.estoqueConfirmado = true;
-      mostrarNotificacao("Sucesso! Pesos consolidados no Estoque.");
-      atualizarTudo();
-    }
-
-    function abrirModalEstoque(nome, qtd) {
-      document.getElementById('s11-modal-titulo').innerText = nome;
-      document.getElementById('s11-modal-qtd').innerText = qtd;
-      document.getElementById('s11-modal-lote').innerText = sim.lote;
-      document.getElementById('s11-modal-val').innerText = sim.validade;
-      document.getElementById('s11-modal').classList.remove('hidden');
-    }
-    
-    function fecharModalEstoque() {
-      document.getElementById('s11-modal').classList.add('hidden');
-    }
-
-    function alternarParadaSlide12() {
-      sim.paradaAtiva = !sim.paradaAtiva;
-      atualizarTudo();
-    }
-  </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
